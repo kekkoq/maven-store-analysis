@@ -1,0 +1,10 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "maven_factory",
+            "database": "${workspaceFolder:ks-bi-project}/src/db/maven_factory.db"
+        }
+    ]
+}
