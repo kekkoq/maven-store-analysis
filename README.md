@@ -30,6 +30,7 @@ This sequence outlines the steps required to prepare the raw data and successful
 | **5.0** | `verify_data.py` | **Data Integrity Check** | A quality assurance step. This script connects to the database and runs `SELECT COUNT(*)` queries on all tables to **confirm non-zero record counts**, verifying the successful and complete data load. |
 
 ## 4. Analytical Pipeline (Transform Phase)
+<<<<<<< HEAD
 Upon successful data ingestion, the ETL pipeline shifts focus to building a dimensional model optimized for key business analysis and reporting.
 
 **Dimensional Modeling (The Data Warehouse)**
@@ -57,3 +58,10 @@ The pipeline transforms the raw operational data into a Star Schema by creating 
 **Analytical Views** 
   - Goal: SQL Views will be created on top of the dimensional model to pre-aggregate high-level metrics (e.g., monthly sales summary, top traffic sources) into simplified, flat tables.
   - Benefit: This provides the BI tool with fast, ready-to-consume data sources, eliminating the need for complex DAX or M code and speeding up report load times.
+=======
+Upon successful data ingestion, the focus shifts to building the dimensional model, which is optimized for BI reporting.
+
+Dimensional Modeling: Creation of fact_sales (the central table containing metrics like revenue and COGS) and dimension tables (dim_date, dim_customer, dim_product) to create a Star Schema.
+
+Analytical Views: SQL Views will be created to pre-aggregate high-level metrics (e.g., monthly sales summary, top traffic sources) to provide Power BI users with fast, simplified data sources, eliminating the need for complex DAX logic.
+>>>>>>> a1257a781c387dab4cb96166aa45075ca5f02373

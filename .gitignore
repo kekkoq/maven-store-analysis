@@ -30,6 +30,7 @@
     # Ignore VS Code settings (optional)
     .vscode/
 
+<<<<<<< HEAD
    # Ignore virtual environment folders
     .venv/
     venv/
@@ -37,3 +38,5 @@
 
 
 
+=======
+>>>>>>> a1257a781c387dab4cb96166aa45075ca5f02373
