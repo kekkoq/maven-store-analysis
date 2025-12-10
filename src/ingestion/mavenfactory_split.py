@@ -64,7 +64,7 @@ def split_insert_data(input_filepath, output_dir="output_insert_data_files"):
 
 # --- Configuration ---
 # 1. Updated path to your raw SQL data file
-RAW_FILEPATH = r"C:\Repos\ks-bi-project\src\rd\rd_mavenfuzzyfactory.sql"
+RAW_FILEPATH = r"C:\Repos\maven-store-analysis\src\rd\rd_mavenfuzzyfactory.sql"
 # 2. Directory to save the output files
 OUTPUT_DIR_NAME = "output_insert_data_files" 
 

@@ -3,8 +3,8 @@
         {
             "previewLimit": 50,
             "driver": "SQLite",
-            "name": "maven_factory",
-            "database": "${workspaceFolder:ks-bi-project}/src/db/maven_factory.db"
+            "database": "C:\\Repos\\data_backups\\maven_factory.db",
+            "name": "maven_factory"
         }
     ]
 }

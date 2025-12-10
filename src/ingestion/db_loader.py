@@ -4,9 +4,9 @@ import glob
 import re
 
 # --- Configuration ---
-DB_FILEPATH = r"C:\Repos\ks-bi-project\src\db\maven_factory.db"
-SCHEMA_FILEPATH = r"C:\Repos\ks-bi-project\src\mavenfactory_schema.sql"
-DATA_DIR = r"C:\Repos\ks-bi-project\src\rd\output_insert_data_files" 
+DB_FILEPATH = r"C:\Repos\maven-store-analysis\src\db\maven_factory.db"
+SCHEMA_FILEPATH = r"C:\Repos\maven-store-analysis\src\mavenfactory_schema.sql"
+DATA_DIR = r"C:\Repos\maven-store-analysis\src\rd\output_insert_data_files" 
 
 def execute_sql_file_robust(filepath):
     """

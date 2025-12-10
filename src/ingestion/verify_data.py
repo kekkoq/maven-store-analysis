@@ -3,7 +3,7 @@ import os
 
 # --- Configuration ---
 # Your database file path
-DB_FILEPATH = r"C:\Repos\ks-bi-project\src\db\maven_factory.db"
+DB_FILEPATH = r"C:\Repos\maven-store-analysis\src\db\maven_factory.db"
 
 # --- Verification ---
 

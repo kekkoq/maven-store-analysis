@@ -1,4 +1,4 @@
-    # Ignore all SQL files (likely heavy data dumps)
+ # Ignore all SQL files (likely heavy data dumps)
     *.sql
 
     # Ignore database files
@@ -29,4 +29,7 @@
 
     # Ignore VS Code settings (optional)
     .vscode/
+
+   # Ignore virtual environment folders
+    .venv/
 

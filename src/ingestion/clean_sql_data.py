@@ -2,7 +2,7 @@ import os
 import re
 import glob
 
-DATA_DIR = r"C:\Repos\ks-bi-project\src\rd\output_insert_data_files" 
+DATA_DIR = r"C:\Repos\maven-store-analysis\src\rd\output_insert_data_files" 
 
 def clean_data_files():
     """Removes non-SQLite statements and prepares files for bulk loading."""
