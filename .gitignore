@@ -32,4 +32,8 @@
 
    # Ignore virtual environment folders
     .venv/
+    venv/
+
+
+
 
