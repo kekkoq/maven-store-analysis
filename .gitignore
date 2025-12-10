@@ -1,5 +1,6 @@
  # Ignore all SQL files (likely heavy data dumps)
     *.sql
+    *.sqlite
 
     # Ignore database files
     *.db
@@ -7,6 +8,7 @@
     # Ignore insert data folders and generated outputs
     rd/output_insert_data_files/
     rd/
+    src/rd/
 
     # Ignore Power BI temp files and cache
     *.pbix~*
@@ -30,7 +32,6 @@
     # Ignore VS Code settings (optional)
     .vscode/
 
-<<<<<<< HEAD
    # Ignore virtual environment folders
     .venv/
     venv/
@@ -38,5 +39,3 @@
 
 
 
-=======
->>>>>>> a1257a781c387dab4cb96166aa45075ca5f02373
