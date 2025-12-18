@@ -91,7 +91,7 @@ Run the following scripts sequentially from the project root (`maven-store-analy
 python src/data_pipeline/elt_core_load.py
 python src/data_pipeline/update_dimensions.py
 python src/data_pipeline/create_analytical_views.py
-
+ ```
 ---
 ## 5. Reporting and Visualization
 This phase covers connecting the final analytical view (v_daily_analytics_summary) to Power BI Desktop for visualization.
