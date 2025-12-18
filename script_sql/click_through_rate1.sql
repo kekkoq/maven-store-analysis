@@ -15,7 +15,7 @@ FROM (
             ws.created_at,
             ws.website_session_id AS session_id,
             wp.pageview_url AS pageview_url,
-                CASE WHEN wp.pageview_url = '/products' THEN 1 ELSE 0 END AS viewed_products,
+            CASE WHEN wp.pageview_url = '/products' THEN 1 ELSE 0 END AS viewed_products,
             CASE WHEN wp.pageview_url = '/the-original-mr-fuzzy' THEN 1 ELSE 0 END AS viewed_fuzzy,
             CASE WHEN wp.pageview_url = '/cart' THEN 1 ELSE 0 END AS viewed_cart,
             CASE WHEN wp.pageview_url = '/shipping' THEN 1 ELSE 0 END AS viewed_shipping,

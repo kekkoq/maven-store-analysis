@@ -34,7 +34,7 @@ total_sessions_projection AS (
         created_at BETWEEN '2012-11-10' AND '2012-11-27' -- Start after test end date
         AND pageview_url IN ('/billing', '/billing-2')
 )
--- Final SELECT: Calculate the projected incremental sales
+-- Calculate the projected incremental sales
 SELECT 
     ROUND(tsp.total_sessions_to_project * il.delta_rev_per_session, 2) AS projected_incremental_revenue
 FROM total_sessions_projection AS tsp

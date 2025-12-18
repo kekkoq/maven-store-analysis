@@ -1,29 +1,33 @@
-"""ETL script to load prepared data into the data warehouse (SQLite database).
+"""ELT script to load prepared data into the data warehouse (SQLite database).
 
-File: src/maven-store-analysis/src/etl/etl_bounce_rate.py
+File: src/maven-store-analysis/src/data_pipeline/elt_core_load.py
 
 Project Structure:
 
 maven-store-analysis (project_root)/
-├── src/etl/
-│   ├── etl_bounce_rate.py  # This file 
+├── src/data_pipeline/
+│   ├── el_core_load.py  # This file 
 """
 
 import sqlite3
 import pathlib
+import sys
+
+# --- Define Project Root and Add to Path for Imports ---
+PROJECT_ROOT_DIR = pathlib.Path(__file__).resolve().parent.parent.parent  
+sys.path.append(str(PROJECT_ROOT_DIR))
 
 from src.logger import init_logger, logger
-
-PROJECT_ROOT_DIR = pathlib.Path(__file__).resolve().parent.parent.parent  
-ETL_DIR: pathlib.Path = PROJECT_ROOT_DIR / "src" / "etl" 
-PACKAGE_DIR: pathlib.Path = ETL_DIR.parent
+ 
+ELT_DIR: pathlib.Path = PROJECT_ROOT_DIR / "src" / "data_pipeline" 
+PACKAGE_DIR: pathlib.Path = ELT_DIR.parent
 DATA_BACKUPS_DIR = pathlib.Path("C:/Repos/data_backups") # path for external location
 DB_PATH = DATA_BACKUPS_DIR / "maven_factory.db"
 
 init_logger()  # Initialize the logger before any logging
 
 logger.info(f"PROJECT_ROOT_DIR:    {PROJECT_ROOT_DIR}")
-logger.info(f"ETL_DIR:             {ETL_DIR}")
+logger.info(f"ELT_DIR:             {ELT_DIR}")
 logger.info(f"PACKAGE_DIR:         {PACKAGE_DIR}")
 logger.info(f"DATA_BACKUPS_DIR:    {DATA_BACKUPS_DIR}")
 logger.info(f"DB_PATH:             {DB_PATH}")
@@ -154,6 +158,9 @@ def create_schema(cursor: sqlite3.Cursor) -> None:
         logger.info("Clearing existing data from dim_session_activity...")
         cursor.execute("DELETE FROM dim_session_activity;")
 
+        logger.info("Clearing existing data from fact_orders...")
+        cursor.execute("DELETE FROM fact_orders;")
+
         # 3. DIMENSION TABLE: dim_date (For Time-based Grouping and Trend Analysis)
             # This is critical for reporting daily, weekly, or monthly AOV/CVR trends.
         cursor.execute("""
@@ -178,12 +185,12 @@ def create_schema(cursor: sqlite3.Cursor) -> None:
 
     except sqlite3.Error as e:
         logger.error(f"Error creating tables: {e}")
-        # Re-raise the error or handle it to ensure the main ETL function knows the schema failed
+        # Re-raise the error or handle it to ensure the main ELT function knows the schema failed
         raise e
 
-# --- 3. Main ETL Function
+# --- 3. Main ELT Function
 
-def run_bounce_rate_etl():
+def run_bounce_rate_elt():
     """
     Main function to execute the Extract, Load, and Transform (ELT) process
     for the Bounce Rate metric.
@@ -202,13 +209,13 @@ def run_bounce_rate_etl():
         # 2. Execute Schema Creation 
         create_schema(cursor)
         
-       # 3. ETL STEP 1: DIMENSION TABLE (dim_session_activity)
+       # 3. ELT STEP 1: DIMENSION TABLE (dim_session_activity)
         logger.info("Executing transformation to populate dim_session_activity...")
         # (Optional cleanup here: DELETE FROM dim_session_activity;)
         cursor.execute(TRANSFORMATION_SQL)
         logger.info(f"SUCCESS: Inserted {cursor.rowcount:,} records into dim_session_activity.") 
         
-        # 4. ETL STEP 2: FACT TABLE (fact_orders) -- ADD THIS HERE!
+        # 4. ELT STEP 2: FACT TABLE (fact_orders) -- ADD THIS HERE!
         logger.info("Executing transformation to populate fact_orders...")
         # (Optional cleanup here: DELETE FROM fact_orders;)
         cursor.execute(FACT_ORDERS_SQL)
@@ -235,6 +242,6 @@ if __name__ == "__main__":
     # --- 1: CALL THE INITIALIZATION FUNCTION ---
     init_logger() 
     logger.info("Application starting up and logger initialized.")
-    # --- 2: START THE MAIN ETL PROCESS ---
+    # --- 2: START THE MAIN ELT PROCESS ---
     # This runs the connection, schema creation, and transformation
-    run_bounce_rate_etl()
+    run_bounce_rate_elt()

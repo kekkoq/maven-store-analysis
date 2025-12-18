@@ -20,7 +20,7 @@ WITH conversion_test_analysis AS (
     GROUP BY ws.website_session_id 
 )
 SELECT  
-        CASE WHEN viewed_home = 1 THEN 'home'
+    CASE WHEN viewed_home = 1 THEN 'home'
          WHEN viewed_lander = 1 THEN 'lander-1'
          ELSE 'other' END AS entry_page,
     COUNT(session_id) AS total_sessions,

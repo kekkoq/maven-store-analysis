@@ -12,25 +12,25 @@ Dimensional Model: Creation of Fact Tables (fact_sales) and Dimension Tables (e.
 
 BI Readiness: Creation of analytical SQL Views or Materialized Tables for direct consumption by Power BI dashboards.
 
+---
 ## 2. Data Source and Compatibility Note
 The raw dataset for this project originates from the LinkedIn Learning: Advanced MySQL Data Analysis course. The original SQL file was structured for MySQL environments, which posed significant compatibility challenges for bulk loading into SQLite.
 
 The ETL sequence below specifically addresses these challenges, particularly the use of multi-line INSERT INTO ... VALUES statements and incompatible control commands (SET AUTOCOMMIT=0;), ensuring the data is parsed and loaded reliably into the SQLite environment.
 
-## 3. Data Ingestion Sequence (The ETL 'Extract' and 'Load' Phases)
-This sequence outlines the steps required to prepare the raw data and successfully load the transactional tables into the maven_factory.db database.
+### Database Structure (Star Schema)
 
-| Step # | File Used / Action | Purpose | Description |
-| :---: | :--- | :--- | :--- |
-| **0.0** | **Manual Source Cleanup** | **Schema Separation** | Before starting, the original raw file (`rd_mavenfuzzyfactory.sql`) is manually edited to **remove all `CREATE TABLE` and `CREATE INDEX` statements**. This leaves only the raw `INSERT INTO` data blocks for subsequent processing. |
-| **1.0** | `mavenfactory_split.py` | **Data Modularization** | Executes the first transformation. It reads the single, massive raw data file and systematically splits the data into **six smaller, table-specific SQL files**. This prevents memory overload and enables a faster, more granular loading process. |
-| **2.0** | `clean_sql_data.py` | **SQLite Compatibility** | Executes the second critical transformation. It processes the 6 split data files (from Step 1.0) to **remove all non-SQLite commands** (e.g., `SET AUTOCOMMIT=0;`, `COMMIT;`) that cause the Python loader to fail silently. |
-| **3.0** | **Terminal Command** | **Database Schema Load** | Executes the clean schema file (`mavenfactory_schema.sql`) to **create all seven empty tables** (`website_sessions`, `orders`, etc.) within the `maven_factory.db` file. |
-| **4.0** | `db_loader.py` | **Robust Data Loading** | The core loading step. This Python script uses a **robust, line-by-line parsing logic** designed to specifically overcome SQLite's difficulty with large, multi-line `INSERT INTO ... VALUES` blocks, finally writing the data to the database. |
-| **5.0** | `verify_data.py` | **Data Integrity Check** | A quality assurance step. This script connects to the database and runs `SELECT COUNT(*)` queries on all tables to **confirm non-zero record counts**, verifying the successful and complete data load. |
+The transformation process populates the following key tables in the `maven_factory.db` database:
 
-## 4. Analytical Pipeline (Transform Phase)
-<<<<<<< HEAD
+| Type | Table Name | Purpose | Key Metrics |
+| :--- | :--- | :--- | :--- |
+| **Raw Source** | `website_sessions`, `orders`, etc. | Raw data loaded directly from source files (Phase 1). | None (Raw Data) |
+| **Dimension** | `dim_session_activity` | One row per session, enriched with bounce flag and **channel group**. | Traffic, Bounce Rate, Device Type |
+| **Fact** | `fact_orders` | Stores one row per order. | Revenue, AOV, Cogs |
+| **View (Reporting)**| `v_daily_analytics_summary` | **The final output.** Aggregates all metrics daily by `channel_group`. | All primary KPIs |
+
+---
+## 3. Analytical Pipeline (Transform Phase)
 Upon successful data ingestion, the ETL pipeline shifts focus to building a dimensional model optimized for key business analysis and reporting.
 
 **Dimensional Modeling (The Data Warehouse)**
@@ -51,17 +51,120 @@ The pipeline transforms the raw operational data into a Star Schema by creating 
   - Purpose: Enables detailed Product and Cross-Sell Analysis.
   - Content: Contains one row for every individual item purchased in an order, allowing for analysis of product bundles, refunds, and item-level profitability.
 
- - dim_date **(Dimension Table)**:
+- dim_date **(Dimension Table)**:
 
   - Purpose: Enables time-series analysis (Daily, Weekly, Monthly) for all metrics.
-
-**Analytical Views** 
+  **Analytical Views** 
   - Goal: SQL Views will be created on top of the dimensional model to pre-aggregate high-level metrics (e.g., monthly sales summary, top traffic sources) into simplified, flat tables.
   - Benefit: This provides the BI tool with fast, ready-to-consume data sources, eliminating the need for complex DAX or M code and speeding up report load times.
-=======
-Upon successful data ingestion, the focus shifts to building the dimensional model, which is optimized for BI reporting.
 
-Dimensional Modeling: Creation of fact_sales (the central table containing metrics like revenue and COGS) and dimension tables (dim_date, dim_customer, dim_product) to create a Star Schema.
+---
+## 4. Data Ingestion Sequence (The ELT 'Extract' and 'Load' Phases)
+This sequence outlines the steps required to prepare the raw data and successfully load the transactional tables into the maven_factory.db database.
 
-Analytical Views: SQL Views will be created to pre-aggregate high-level metrics (e.g., monthly sales summary, top traffic sources) to provide Power BI users with fast, simplified data sources, eliminating the need for complex DAX logic.
->>>>>>> a1257a781c387dab4cb96166aa45075ca5f02373
+### Phase 1: Raw Data Ingestion (Prerequisites)
+
+This phase prepares the raw SQL data and loads it into the database's source tables (located in the `ingestion` folder).
+
+| Step # | File Used / Action | Location | Purpose |
+| :---: | :--- | :--- | :--- |
+| **1.0** | `clean_sql_data.py` | `ingestion/` | **Splits and Cleans Raw Data.** Reads the source data, splits it into table-specific files (e.g., `orders_insert_data.sql`), and ensures SQLite compatibility. |
+| **2.0** | **Terminal Command** | Project Root | **Schema Load.** Executes `mavenfactory_schema.sql` to **create all empty raw tables** in `maven_factory.db`. |
+| **3.0** | `db_loader.py` | `ingestion/` | **Robust Data Loading.** Reads the cleaned SQL files from the output folder and loads all raw data into the corresponding tables. |
+| **4.0** | `verify_data.py` | `ingestion/` | **Quality Check.** Confirms non-zero record counts in all raw tables. |
+
+### Phase 2: Data Modeling and Reporting Layer Creation (ELT Phase)
+
+This phase transforms the raw data into the final BI-ready reporting view (scripts located in `src/data_pipeline/`).
+
+| # | Script Name | Function | Output |
+| :-: | :--- | :--- | :--- |
+| **5.0** | `elt_core_load.py` | **Load Core Data:** Clears and reloads data into the final `dim_session_activity` and `fact_orders` tables. | Populated `dim_session_activity` and `fact_orders`. |
+| **6.0** | `update_dimensions.py`| **Data Enrichment:** Adds and populates the crucial `channel_group` column using defined business logic. | Enriched `dim_session_activity`. |
+| **7.0** | `create_analytical_views.py` | **Reporting Layer:** Creates the final aggregated analytical view, `v_daily_analytics_summary`. | Final view ready for Power BI. |
+
+###  Execution Command
+
+Run the following scripts sequentially from the project root (`maven-store-analysis/`):
+
+```bash
+python src/data_pipeline/elt_core_load.py
+python src/data_pipeline/update_dimensions.py
+python src/data_pipeline/create_analytical_views.py
+
+---
+## 5. Reporting and Visualization
+This phase covers connecting the final analytical view (v_daily_analytics_summary) to Power BI Desktop for visualization.
+
+### Connecting Power BI to the SQLite Database (ODBC Method)
+Since the maven_factory.db is a local file, the most reliable connection method is through an established System Data Source Name (DSN) using an ODBC Driver. This saves the connection path and driver details, eliminating the need to re-enter the connection string for every refresh.
+
+### Dashboard Design
+
+The final Power BI dashboard follows an executive layout, designed to move from high-level metrics to granular operational drivers.
+
+**Primary Visuals & Logic:**
+
+Traffic Segmentation:
+
+- paid_brand: Traffic from users specifically searching for your company name (e.g., "Maven Store"). This usually has the highest CVR because the user already knows and wants the brand.
+
+- paid_nonbrand: This represents paid search traffic where the user did not search for a specific brand name. strategy is successfully capturing "generic" search intent rather than relying solely on existing brand loyalty.
+
+- direct_type_in: Users who typed the URL directly into their browser or used a bookmark. This represents high brand loyalty and returning customers.
+
+- paid_social: Traffic coming from paid advertisements on platforms like Facebook or Instagram. As seen in your funnel, this often has a lower CVR compared to search, as it is "disruption" marketing rather than "intent-based" search.
+
+January 2014: Multi-Channel Expansion
+
+The business launched Paid Social campaigns (e.g., Facebook/Instagram ads) to diversify traffic sources.
+This launch coincided with the sharp upward trend in Cumulative Revenue, which scaled from under $0.5M to $1.86M following this expansion.
+Launching Paid Social marked a pivotal shift in our marketing strategy, directly contributing to the surge in traffic and the rapid scaling of revenue seen throughout 2014.
+
+![Executive Performance Summary](images/Executive_Performance_Summary.png) 
+
+- **KPI:** Displays Total Orders (31K), Average Order Value ($59.87), Total Revenue ($1.86M), and Conversion Rate (6.78%) to provide an instant health check of the business.
+- **Growth Trend:** A cumulative revenue line chart that highlights the significant "Hockey Stick" growth pivot occurring in early 2014.
+- **Conversion Funnel:** Visualizes the efficiency of the user journey, showing the drop-off from 457.8K Sessions down to 31.1K Orders.
+- **Channel Performance:** A bar chart identifying paid_nonbrand as the primary driver for order volume, allowing executives to see exactly which marketing investments are yielding the highest returns.
+
+## 6. Key Business Insights
+The BI layer revealed several critical findings that would have been difficult to track in raw transactional tables:
+
+1. High-Efficiency Conversion: The site maintains a robust 6.78% CVR. This indicates strong product-market fit and a frictionless checkout process.
+
+2. Scalable Revenue Model: While 2012 and 2013 were foundational years, the infrastructure supported a massive revenue surge in 2014, proving the scalability of the current marketing mix.
+
+3. Healthy Average Basket: An AVO of $59.87 suggests that customers are not just buying single low-cost items, but are engaging with the product catalog at a significant price point.
+
+### Executive Dashboard Analysis
+The finalized dashboard provides the business performance from 2012 to 2015:
+
+- **Financial** Growth: A $1.86M Total Revenue reflects a successful scaling phase that began in early 2014.
+
+- **Operational Efficiency:** The 6.78% Aggregated CVR and 6.8% conversion at the bottom of the funnel demonstrate high traffic quality.
+
+- **Customer Behavior:** An AVO of $59.87 indicates a strong value proposition per transaction.
+
+- **Marketing Impact:** paid_nonbrand is the dominant driver of volume, accounting for the vast majority of the 31K Total Orders.
+
+### Business Recommendations
+
+1. Scale "Top-of-Funnel" Generic Search
+Observation: paid_nonbrand is the largest volume driver, contributing over 21K orders.
+Recommendation: Increase budget allocation for non-branded search terms. 
+
+2. Optimize the "Social" Conversion Gap
+Observation: paid_social has the lowest order volume despite being a key part of the 2014 growth expansion.
+Recommendation: Conduct A/B testing on social media landing pages. Improving this would maximize the return on the investment started in Jan 2014.
+
+3. Maximize High-Intent "Direct" Traffic
+Observation: direct_type_in is the second-largest channel, indicating strong brand recall.
+Recommendation: Implement a loyalty or referring program. This rewards the users who already come to the site directly and helps increase revenue without additional ad spend.
+
+## 7. Future Projects
+- Predictive Modeling: Integrate a "Forecast" layer in the Revenue Trend chart to predict end-of-year totals based on the 2014 growth rate.
+- Granular Drill-downs: Expand v_daily_analytics_summary for deeper product profitability analysis.
+- A/B Testing proves you understand how to use data to drive product decisions.
+- Customer Churn & Retention Modeling
+
