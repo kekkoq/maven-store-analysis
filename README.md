@@ -164,6 +164,8 @@ Recommendation: Implement a loyalty or referring program. This rewards the users
 
 ### Performance and Loyalty Analysis (Dashboard 2)
 
+![Customer Lifecyle and Retention Analysis](images/customer_loyalty.png) 
+
 This analysis evaluates the the customer lifecycle and retention for Maven Factory. While acquisition is scaling successfully, the data reveals a significant retention issue. The primary goal of this dashboard is to move beyond initial sales and understand the behavior of the repeat customer segment.
 
 - **User Volume (KPI Card):** A large basis of 31,696 users, showing strong market reach.
