@@ -1,6 +1,7 @@
 import pathlib
 import sqlite3
 import sys
+from venv import create
 
 # --- Define Project Root and Add to Path for Imports ---
 PROJECT_ROOT_DIR = pathlib.Path(__file__).resolve().parent.parent.parent  
@@ -33,6 +34,7 @@ try:
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
+
     print("Starting creation of v_daily_analytics_summary view...")
 
     # DROP/CREATE THE SINGLE COMPREHENSIVE VIEW ---
@@ -103,7 +105,105 @@ try:
             ds.report_date, ds.channel_group;
     """)
 
-    conn.commit()
+    print("Starting creation of v_customer_loyalty_metrics view...")
+
+    cursor.execute("DROP VIEW IF EXISTS v_customer_loyalty_metrics;")
+    
+    cursor.execute("""
+        CREATE VIEW v_customer_loyalty_metrics AS 
+        
+        WITH user_order_sequence AS (
+        SELECT 
+            fo.user_id,
+            fo.order_id,
+            fo.created_at,
+            STRFTIME('%Y-%m-01', fo.created_at) as order_month,
+            ds.channel_group,
+            -- Calculate the order rank for each user to identify 1st, 2nd, 3rd+ purchases
+            ROW_NUMBER() OVER(PARTITION BY fo.user_id ORDER BY fo.created_at) as order_number,
+            -- Get the date of the previous order to calculate days between purchases
+            LAG(fo.created_at) OVER(PARTITION BY fo.user_id ORDER BY fo.created_at) as previous_order_date
+        FROM fact_orders AS fo
+        LEFT JOIN dim_session_activity AS ds ON fo.website_session_id = ds.session_id
+        )
+        SELECT 
+            order_id,
+            user_id,
+            order_month,
+            channel_group,
+            order_number,
+            CASE 
+                WHEN order_number = 1 THEN 'First-Time Buyer'
+                ELSE 'Repeat Buyer'
+            END AS buyer_type,
+            -- Calculate the "Days to Repurchase" (Churn/Retention metric)
+            CASE 
+                WHEN previous_order_date IS NOT NULL 
+                THEN (julianday(created_at) - julianday(previous_order_date))
+                ELSE 0 
+            END AS days_since_last_purchase
+        FROM user_order_sequence;
+        """)    
+
+    print("Starting creation of v_customer_cohort_analysis...")
+
+    cursor.execute("DROP VIEW IF EXISTS v_customer_cohort_analysis;")
+
+    cursor.execute("""
+        CREATE VIEW v_customer_cohort_analysis AS
+        WITH user_first_order AS (
+            SELECT
+                user_id,
+                STRFTIME('%Y-%m-01', MIN(created_at)) AS cohort_month
+            FROM fact_orders
+            GROUP BY user_id
+        ),
+        order_date AS (
+            SELECT
+                fo.user_id,
+                fo.order_id,
+                STRFTIME('%Y-%m-01', fo.created_at) AS order_month,
+                ufo.cohort_month
+            FROM fact_orders AS fo
+            LEFT JOIN user_first_order AS ufo ON fo.user_id = ufo.user_id
+        )
+        SELECT
+            order_id,
+            user_id,
+            STRFTIME('%Y-%m-01', cohort_month) AS cohort_month,
+            order_month,
+            ((CAST(STRFTIME('%Y', order_month) AS INT) - CAST(STRFTIME('%Y', cohort_month) AS INT)) * 12 + 
+            (CAST(STRFTIME('%m', order_month) AS INT) - CAST(STRFTIME('%m', cohort_month) AS INT))) AS cohort_index            
+        FROM order_date;
+        """)
+
+    print("Starting creation of v_dim_session_landing_pages_analysis...")
+
+    cursor.execute("DROP VIEW IF EXISTS v_dim_session_landing_pages_analysis;")
+
+    cursor.execute("""
+        CREATE VIEW v_dim_session_landing_pages_analysis AS
+        -- This view brings in the first pageview URL for each session, and whether the session converted into an order
+        SELECT 
+            ws.website_session_id,
+            ws.created_at,
+            ws.utm_source,
+            ws.utm_campaign,
+            wp.pageview_url AS landing_page, -- First pageview URL for each session
+            CASE WHEN ws.is_repeat_session = 1 THEN 'Repeat' ELSE 'New' END AS user_type,
+            CASE WHEN fo.order_id IS NOT NULL THEN 1 ELSE 0 END AS is_converted
+        FROM website_sessions AS ws
+        LEFT JOIN website_pageviews AS wp 
+            ON ws.website_session_id = wp.website_session_id
+            AND wp.website_pageview_id = (
+                SELECT MIN(wpv.website_pageview_id) 
+                FROM website_pageviews AS wpv
+                WHERE wpv.website_session_id = ws.website_session_id
+            )
+        LEFT JOIN fact_orders AS fo 
+            ON ws.website_session_id = fo.website_session_id;
+        """)
+
     print("Successfully created the comprehensive analytical view: v_daily_analytics_summary")
 
 except sqlite3.Error as e:

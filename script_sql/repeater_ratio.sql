@@ -1,6 +1,6 @@
-
+-- Calculate days to return statistics for repeat users
 WITH new_sessions AS (
-    -- 1. Identify the *first* (new) session for all users in the cohort window
+    -- 1. Identify the first session (new) for all users 
     SELECT
         user_id,
         website_session_id AS first_session_id,
@@ -21,13 +21,13 @@ first_second_session_diff AS (
     GROUP BY 
         ns.user_id,
         ns.first_session_date
-    HAVING days_to_first_repeat IS NOT NULL  -- Only consider users who had a repeat session. Since MIN is used in the calculation, it needs to be filtered here. 
+    HAVING days_to_first_repeat IS NOT NULL  -- Only consider repeat users. Since MIN is used in the calculation, it needs to be filtered in the HAVING clause.
 )
 SELECT
-    -- Use COALESCE/NULLIF to prevent division by zero, although AVG handles NULLs fine.
-    AVG(days_to_first_repeat) AS avg_days_to_return,
-    MIN(days_to_first_repeat) AS min_days_to_return,
-    MAX(days_to_first_repeat) AS max_days_to_return,
-    COUNT(user_id) AS total_users_who_returned
+    -- Use COALESCE/NULLIF to prevent division by zero
+    COUNT(user_id) AS total_users_who_returned,
+    NULLIF(AVG(days_to_first_repeat), 0) AS avg_days_to_return,
+    NULLIF(MIN(days_to_first_repeat), 0) AS min_days_to_return,
+    NULLIF(MAX(days_to_first_repeat), 0) AS max_days_to_return   
 FROM first_second_session_diff;
 

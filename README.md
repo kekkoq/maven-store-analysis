@@ -137,7 +137,7 @@ The BI layer revealed several critical findings that would have been difficult t
 
 3. Healthy Average Basket: An AVO of $59.87 suggests that customers are not just buying single low-cost items, but are engaging with the product catalog at a significant price point.
 
-### Executive Dashboard Analysis
+### Executive Dashboard Analysis (Dashboard 1)
 The finalized dashboard provides the business performance from 2012 to 2015:
 
 - **Financial** Growth: A $1.86M Total Revenue reflects a successful scaling phase that began in early 2014.
@@ -162,9 +162,29 @@ Recommendation: Conduct A/B testing on social media landing pages. Improving thi
 Observation: direct_type_in is the second-largest channel, indicating strong brand recall.
 Recommendation: Implement a loyalty or referring program. This rewards the users who already come to the site directly and helps increase revenue without additional ad spend.
 
+### Performance and Loyalty Analysis (Dashboard 2)
+
+This analysis evaluates the the customer lifecycle and retention for Maven Factory. While acquisition is scaling successfully, the data reveals a significant retention issue. The primary goal of this dashboard is to move beyond initial sales and understand the behavior of the repeat customer segment.
+
+- **User Volume (KPI Card):** A large basis of 31,696 users, showing strong market reach.
+
+- **Retention Crisis:** Despite the large user base, retention drops off almost entirely after Month 0, with Month 1 retention averaging only 0.91%.
+
+- **Revenue Concentration (Pareto):** The Pareto chart shows that a tiny fraction of the repeaters is responsible for the vast majority of the revenue, while the rest are likely one-time "New" buyers.
+
+- **Order Trend (New vs. Repeat):** The large blue area (New Orders) compared to the thin orange line (Repeat Orders) confirms that despite having 31,000+ users, the business has not yet built a reliable loyalty base.
+
+### Strategic Recommendations
+
+1. Implement a Post-Purchase "Hook": With Month 1 retention below 1%, the business should implement email marketing or discount incentives immediately after the first purchase to drive that second order.
+
+2. Optimize Custom Landers for Repeaters: Currently, high-converting landers like /lander-5 (10.17% conv. rate) are only seeing "New" traffic. Testing these pages for returning "Brand" traffic could yield even higher conversion rates than the current 7.83%.
+
+3. Premier Loyalty Program: Use the Pareto Analysis to identify the specific user_ids in the top 20% of revenue and enroll them in an exclusive loyalty tier to protect the core revenue stream.
+
 ## 7. Future Projects
-- Predictive Modeling: Integrate a "Forecast" layer in the Revenue Trend chart to predict end-of-year totals based on the 2014 growth rate.
-- Granular Drill-downs: Expand v_daily_analytics_summary for deeper product profitability analysis.
-- A/B Testing proves you understand how to use data to drive product decisions.
-- Customer Churn & Retention Modeling
+
+- A/B Testing for landing and billing pages 
+- Bounce rate analysis 
+- Channel performance analysis 
 
