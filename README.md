@@ -121,29 +121,23 @@ The business launched Paid Social campaigns (e.g., Facebook/Instagram ads) to di
 This launch coincided with the sharp upward trend in Cumulative Revenue, which scaled from under $0.5M to $1.86M following this expansion.
 Launching Paid Social marked a pivotal shift in our marketing strategy, directly contributing to the surge in traffic and the rapid scaling of revenue seen throughout 2014.
 
-![Executive Performance Summary](images/Executive_Performance_Summary.png) 
-
-- **KPI:** Displays Total Orders (31K), Average Order Value ($59.87), Total Revenue ($1.86M), and Conversion Rate (6.78%) to provide an instant health check of the business.
-- **Growth Trend:** A cumulative revenue line chart that highlights the significant "Hockey Stick" growth pivot occurring in early 2014.
-- **Conversion Funnel:** Visualizes the efficiency of the user journey, showing the drop-off from 457.8K Sessions down to 31.1K Orders.
-- **Channel Performance:** A bar chart identifying paid_nonbrand as the primary driver for order volume, allowing executives to see exactly which marketing investments are yielding the highest returns.
-
 ## 6. Key Business Insights
-The BI layer revealed several critical findings that would have been difficult to track in raw transactional tables:
-
-1. High-Efficiency Conversion: The site maintains a robust 6.78% CVR. This indicates strong product-market fit and a frictionless checkout process.
-
-2. Scalable Revenue Model: While 2012 and 2013 were foundational years, the infrastructure supported a massive revenue surge in 2014, proving the scalability of the current marketing mix.
-
-3. Healthy Average Basket: An AVO of $59.87 suggests that customers are not just buying single low-cost items, but are engaging with the product catalog at a significant price point.
 
 ### Executive Dashboard Analysis (Dashboard 1)
-The finalized dashboard provides the business performance from 2012 to 2015:
+
+![Executive Performance Summary](images/Executive_Performance_Summary.png) 
+
+The dashboard provides the business performance from 2012 to 2015:
+While 2012 and 2013 were foundational years, the infrastructure supported a massive revenue surge in 2014, proving the scalability of the current marketing mix.
 
 - **Financial** Growth: A $1.86M Total Revenue reflects a successful scaling phase that began in early 2014.
 - **Operational Efficiency:** The 6.78% Aggregated CVR and 6.8% conversion at the bottom of the funnel demonstrate high traffic quality.
 - **Customer Behavior:** An AVO of $59.87 indicates a strong value proposition per transaction.
 - **Marketing Impact:** paid_nonbrand is the dominant driver of volume, accounting for the vast majority of the 31K Total Orders.
+- **KPI:** Displays Total Orders (31K), Average Order Value ($59.87), Total Revenue ($1.86M), and Conversion Rate (6.78%) to provide an instant health check of the business.
+- **Growth Trend:** A cumulative revenue line chart that highlights the significant "Hockey Stick" growth pivot occurring in early 2014.
+- **Conversion Funnel:** Visualizes the efficiency of the user journey, showing the drop-off from 457.8K Sessions down to 31.1K Orders.
+- **Channel Performance:** A bar chart identifying paid_nonbrand as the primary driver for order volume, allowing executives to see exactly which marketing investments are yielding the highest returns.
 
 ### Business Recommendations
 
@@ -180,7 +174,7 @@ This analysis evaluates the the customer lifecycle and retention for Maven Facto
 
 ### Revenue Impact Analysis:/billing-2 A/B Test Optimization (Dashboard 3)
 
-![Revenue Impact Analysis:/billing-2 A/B Test Optimizations](images/ab_test_optimization.png) 
+![Revenue Impact Analysis: /billing-2 A/B Test Optimizations](images/ab_test_optimization.png) 
 
 This analysis quantifies the financial impact of a 36-month A/B test transition from /billing to /billing-2. Analysis of over 31,600 sessions identified a significant conversion lift from 45% to 63% that remained consistent across both new and repeat customer segments.
 
