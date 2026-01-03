@@ -204,6 +204,26 @@ try:
             ON ws.website_session_id = fo.website_session_id;
         """)
 
+    print("Starting creation of v_billing_performance_analysis...")
+
+    cursor.execute("DROP VIEW IF EXISTS v_billing_performance_analysis;")
+
+    cursor.execute("""
+    CREATE VIEW v_billing_performance_analysis AS
+        SELECT 
+            ws.website_session_id,
+            ws.created_at AS session_date,
+            wp.pageview_url AS billing_version_seen,
+            CASE WHEN ws.is_repeat_session = 1 THEN 'Repeat' ELSE 'New' END AS user_type,
+            CASE WHEN o.order_id IS NOT NULL THEN 1 ELSE 0 END AS is_ordered
+        FROM website_sessions ws
+        INNER JOIN website_pageviews wp 
+            ON ws.website_session_id = wp.website_session_id
+        LEFT JOIN orders o 
+            ON ws.website_session_id = o.website_session_id
+        WHERE wp.pageview_url IN ('/billing', '/billing-2');
+    """)        
+
     print("Successfully created the comprehensive analytical view: v_daily_analytics_summary")
 
 except sqlite3.Error as e:

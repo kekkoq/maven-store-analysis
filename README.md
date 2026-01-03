@@ -141,11 +141,8 @@ The BI layer revealed several critical findings that would have been difficult t
 The finalized dashboard provides the business performance from 2012 to 2015:
 
 - **Financial** Growth: A $1.86M Total Revenue reflects a successful scaling phase that began in early 2014.
-
 - **Operational Efficiency:** The 6.78% Aggregated CVR and 6.8% conversion at the bottom of the funnel demonstrate high traffic quality.
-
 - **Customer Behavior:** An AVO of $59.87 indicates a strong value proposition per transaction.
-
 - **Marketing Impact:** paid_nonbrand is the dominant driver of volume, accounting for the vast majority of the 31K Total Orders.
 
 ### Business Recommendations
@@ -169,11 +166,8 @@ Recommendation: Implement a loyalty or referring program. This rewards the users
 This analysis evaluates the the customer lifecycle and retention for Maven Factory. While acquisition is scaling successfully, the data reveals a significant retention issue. The primary goal of this dashboard is to move beyond initial sales and understand the behavior of the repeat customer segment.
 
 - **User Volume (KPI Card):** A large basis of 31,696 users, showing strong market reach.
-
 - **Retention Crisis:** Despite the large user base, retention drops off almost entirely after Month 0, with Month 1 retention averaging only 0.91%.
-
 - **Revenue Concentration (Pareto):** The Pareto chart shows that a tiny fraction of the repeaters is responsible for the vast majority of the revenue, while the rest are likely one-time "New" buyers.
-
 - **Order Trend (New vs. Repeat):** The large blue area (New Orders) compared to the thin orange line (Repeat Orders) confirms that despite having 31,000+ users, the business has not yet built a reliable loyalty base.
 
 ### Strategic Recommendations
@@ -184,9 +178,16 @@ This analysis evaluates the the customer lifecycle and retention for Maven Facto
 
 3. Premier Loyalty Program: Use the Pareto Analysis to identify the specific user_ids in the top 20% of revenue and enroll them in an exclusive loyalty tier to protect the core revenue stream.
 
-## 7. Future Projects
+### Revenue Impact Analysis:/billing-2 A/B Test Optimization (Dashboard 3)
 
-- A/B Testing for landing and billing pages 
-- Bounce rate analysis 
-- Channel performance analysis 
+![Revenue Impact Analysis:/billing-2 A/B Test Optimizations](images/ab_test_optimization.png) 
+
+This analysis quantifies the financial impact of a 36-month A/B test transition from /billing to /billing-2. Analysis of over 31,600 sessions identified a significant conversion lift from 45% to 63% that remained consistent across both new and repeat customer segments.
+
+- **Incremental Revenue Gain (KPI Card):** The transition from /billing to /billing-2 generated an incremental revenue gain of $1.9M over the 36-month analysis period.
+- **Conversion Rate by Billing Pages (Bar Chart):** The /billing-2 outperformed the original /billing page by  nearly 19 percentage points (45% /billing to 63%/billing-2). The 63% conversion rate should be used for future traffic forecasts to project the continued financial impact of this optimization.
+- **Session Volume by User Type (Middle Wide Chart):** The business experienced a massive scale-up in traffic, with new users driving the majority of session volume.
+- **Revenue vs. Hypothetical Baseline (Bottom Wide Chart):** The "Actual" revenue (blue) and "Hypothetical" revenue (orange) diverged significantly starting in late 2012. The widening gap illustrates as traffic grew, the value of the conversion lift materially increased materially. 
+
+
 
